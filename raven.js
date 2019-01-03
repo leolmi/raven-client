@@ -1,7 +1,7 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE
- * v1.0.0
+ * v1.0.2
  * @license
  * Released under MIT license
  * Copyright ...
@@ -42,7 +42,14 @@
  *  
  */
 ;(function() {
-  const root = Function('return this')();
+  // self
+  const _self = typeof self == 'object' && self && self.Object === Object && self;
+  // the global object
+  const root = _self || Function('return this')();
+  // exports
+  const _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+  // module
+  const _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
 
   let Deferred = function() {
     this.promise = new Promise((resolve, reject) => {
@@ -135,5 +142,14 @@
 
   if (raven.active) document.querySelector('html').classList.add(raven.constants.owner);
 
-  root.raven = raven;
+  if (_module) {
+    // Export for Node.js.
+    (_module.exports = raven).raven = raven;
+    // Export for CommonJS support.
+    _exports.raven = raven;
+  } else {
+    // Export to the global object.
+    root.raven = raven;
+  }
+
 }.call(this));
