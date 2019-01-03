@@ -1,5 +1,14 @@
 {
   "name": "raven-client",
-  "version": "1.0.0",
-  "license": "MIT"
+  "version": "1.0.1",
+  "license": "MIT",
+  "main": "raven.js",
+  "description": "raven client interop",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leolmi/raven-client.git"
+  },
+  "keywords": [
+    "raven"
+  ]
 }
