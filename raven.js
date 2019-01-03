@@ -1,6 +1,7 @@
 'use strict';
 /**
     RAVEN client module
+    1.0.0
 
     --> send or/and retrieve state message:
     raven.state([data [, options]])
