@@ -1,46 +1,49 @@
 'use strict';
 /**
-    RAVEN client module
-    1.0.0
+ * RAVEN CLIENT MODULE
+ * v1.0.0
+ * @license
+ * Released under MIT license
+ * Copyright ...
+ * 
+ * --> send or/and retrieve state message:
+ * raven.state([data [, options]])
+ *   .then(
+ *      (response) => {...},
+ *      (err) => {...});
+ * 
+ *      // data (optional):
+ *      // send data to raven container
+ *      {
+ *        name: 'appname',  // application name
+ *        version: '1.0.0', // application version
+ *        menu: [....],     // application menu structure changes
+ *        error: err        // error to parent
+ *      }
+ * 
+ *      // options (optional):
+ *      {
+ *        unique: false,    // if true run one only message for type until response
+ *        timeout: 3000     // request timeout
+ *      }
+ * 
+ *      // response
+ *      {
+ *        token: 'xxxx',     // token
+ *        data: {...},       // data object
+ *        action: 'ation',   // action name (see constants.)
+ *        type: string;
+ *      }
+ * 
+ * --> events handler:
+ * raven.subscribe(
+ *    (message) => any            // message handler
+ *    [, (data) => boolean]);     // (optional) message filter
+ *  
+ */
+;(function() {
+  const root = Function('return this')();
 
-    --> send or/and retrieve state message:
-    raven.state([data [, options]])
-      .then(
-        (response) => {...},
-        (err) => {...});
-  
-
-        // data (optional):
-        // send data to raven container
-        {
-          name: 'appname',  // application name
-          version: '1.0.0', // application version
-          menu: [....],     // application menu structure changes
-          error: err        // error to parent
-        }
-
-        // options (optional):
-        {
-          unique: false,    // if true run one only message for type until response
-          timeout: 3000     // request timeout
-        }
-
-        // response
-        {
-          token: 'xxxx',     // token
-          data: {...},       // data object
-          action: 'ation',   // action name (see constants.)
-          type: string;
-        }
-
-    
-    --> events handler:
-    raven.subscribe(
-      (message) => any            // message handler
-      [, (data) => boolean]);     // (optional) message filter
-
-*/
-(function(global) {
   let Deferred = function() {
     this.promise = new Promise((resolve, reject) => {
       this.resolve = resolve;
@@ -59,7 +62,7 @@
   }
   function _send(msg) {
     if (!raven.active) return console.warn('Undefined parent raven module!');
-    global.parent.postMessage(msg, '*');
+    root.parent.postMessage(msg, '*');
   }
   function _checkOutOfTime() {
     const now = (new Date()).getTime();
@@ -116,13 +119,13 @@
         menu: 'menu-action'
       }
     },
-    active: (global.parent !== global),
+    active: (root.parent !== root),
     state: (data, o) => _deferred('state', data, o),
     subscribe: (fn, filter) => _addHandler(fn, filter),
     unsubscribe: (fn) => _removeHandler(fn)
   };
 
-  global.addEventListener('message', (e) => {
+  root.addEventListener('message', (e) => {
     if ((e.data||{}).owner === raven.constants.owner) {
       // console.log('MESSAGE FROM RAVEN CONTAINER', e.data);
       _evalDefered(e.data);
@@ -132,5 +135,5 @@
 
   if (raven.active) document.querySelector('html').classList.add(raven.constants.owner);
 
-  global.raven = raven;
-})(this);
+  root.raven = raven;
+}.call(this));
