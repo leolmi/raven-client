@@ -1,7 +1,7 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE
- * v1.0.2
+ * v1.0.3
  * @license
  * Released under MIT license
  * Copyright ...
@@ -46,18 +46,47 @@
   const _self = typeof self == 'object' && self && self.Object === Object && self;
   // the global object
   const root = _self || Function('return this')();
+  // skip if just exists
+  if (!!root.raven) return console.log('RAVEN INSTALLED!');
   // exports
   const _exports = typeof exports == 'object' && exports && !exports.nodeType && exports;
   // module
   const _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
 
+
+  let _Promise = function(cb) {
+    setTimeout(() => cb(this.resolve, this.reject));
+  }
+  _Promise.prototype = {
+    done: false,
+    callback: null,
+    then: (res, rej) => {
+      this._resolve = res;
+      this._reject = rej;
+    },
+    resolve: (data) => {
+      if (this.done) return;
+      this.done = true;
+      if (!!this._resolve) return this._resolve(data);
+      console.warn('no resolve implemantation!');
+    },
+    reject: (err) => {
+      if (this.done) return;
+      this.done = true;
+      if (!!this._reject) return this._reject(err);
+      console.warn('no reject implemantation!');
+    }
+  }
+  const PRMSCTOR = (typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) ? Promise : _Promise;
+
   let Deferred = function() {
-    this.promise = new Promise((resolve, reject) => {
+    this.promise = new PRMSCTOR((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
     });
   }
   Deferred.prototype = {
+    promise: null,
     resolve: null,
     reject: null
   }
