@@ -92,6 +92,9 @@
   }
   const _handlers = {};
   const _cache = {};
+  const _state = {
+    css: false
+  };
   function _id() {
     const now = new Date();
     return now.getTime();
@@ -108,6 +111,17 @@
         delete _cache[k];
       }
     });
+  }
+  function _checkCss(data) {
+    if (!((data||{}).app||{}).css || _state.css) return;
+    const style = document.createElement('style');
+    if (!!style.styleSheet) {
+      style.styleSheet.cssText = data.app.css;
+    } else {
+      style.appendChild(document.createTextNode(data.app.css));
+    }
+    document.getElementsByTagName('head')[0].appendChild(style);
+    _state.css = true;
   }
   function _deferred(action, data, o) {
     o = o || {};
@@ -164,6 +178,7 @@
   root.addEventListener('message', (e) => {
     if ((e.data||{}).owner === raven.constants.owner) {
       // console.log('MESSAGE FROM RAVEN CONTAINER', e.data);
+      _checkCss(e.data);
       _evalDefered(e.data);
       Object.keys(_handlers).forEach(k => (!_handlers[k].filter || !!_handlers[k].filter(e.data)) ? _handlers[k].callback(e.data) : null);
     }
