@@ -1,7 +1,7 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE
- * v1.0.5
+ * v1.0.6
  * @license
  * Released under MIT license
  * Copyright ...
