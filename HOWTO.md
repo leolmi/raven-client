@@ -10,7 +10,7 @@ installazione libreria:
 ````
 > la libreria prevede le definizioni per Typescript nel file **raven.d.ts**
 
-Sarà quindi necessario referenziare la libreria nel file index:
+Sarà quindi necessario referenziare la libreria nel file index.html:
 ````
   <script src="node_modules/raven-client/raven.js"></script>
 ````
@@ -44,11 +44,11 @@ Ipotizziamo di aggiungere al progetto AngularJS un modulo run che viene eseguito
         version:'x.x.Xxx'
       }).then((resp) => {
 
-        console.log('CONTAINER RESPONSE', resp);
+        console.log('RAVEN RESPONSE', resp);
 
       }, (err) => {
 
-        console.error('CONTAINER ERROR', err);
+        console.error('RAVEN ERROR', err);
 
       });
 
@@ -74,9 +74,9 @@ L'oggetto della *response* conterrà sempre le seguenti property:
 <br>
  
 ### Ricezione messaggi da Raven
-L'invio di messaggi da raven avviene ad esempio nelle azioni richieste dalle voci di menu.
+L'invio di messaggi da Raven avviene ad esempio nelle azioni richieste dalle voci di menu.
 
-Per ricevere messaggi da Raven è necessario sottoscriversi agli eventi di messaggistica di raven:
+Per ricevere messaggi da Raven è necessario sottoscriversi ai suoi eventi di messaggistica:
 
 ````
   raven.subscribe((message) => {
@@ -91,7 +91,7 @@ il metodo subscribe prevede il passaggio di due callback:
 ````
 la prima rappresenta la logica di consumo del messaggio dove implementare la propria logica;
 
-la seconda (opzionale) è un filtro per i messaggi inviati.
+la seconda (opzionale) è un filtro per i messaggi ricevuti (nell'esempio sono considerati solo i messaggi con *action* valorizzata).
 
 L'oggetto *message* conterrà sempre le seguenti property: 
 ````
