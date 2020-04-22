@@ -171,6 +171,7 @@
     },
     active: (root.parent !== root),
     state: (data, o) => _deferred('state', data, o),
+    send: (msg) => _send(msg),
     subscribe: (fn, filter) => _addHandler(fn, filter),
     unsubscribe: (fn) => _removeHandler(fn)
   };
