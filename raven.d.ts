@@ -21,3 +21,7 @@ export const active: boolean;
  * raven constants
  */
 export const constants: any;
+/**
+ * send message
+ */
+export function send(msg?:any): void;
