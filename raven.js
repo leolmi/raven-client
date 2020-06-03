@@ -1,7 +1,7 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE
- * v1.0.6
+ * v1.0.8
  * @license
  * Released under MIT license
  * Copyright ...
@@ -53,6 +53,7 @@
   // module
   const _module = _exports && typeof module == 'object' && module && !module.nodeType && module;
 
+  const _isFunction = (obj) => typeof obj == 'function' || false;
 
   let _Promise = function(cb) {
     setTimeout(() => cb(this.resolve, this.reject));
@@ -67,29 +68,27 @@
     resolve: (data) => {
       if (this.done) return;
       this.done = true;
-      if (!!this._resolve) return this._resolve(data);
+      if (_isFunction(this._resolve)) return this._resolve(data);
       console.warn('no resolve implemantation!');
     },
     reject: (err) => {
       if (this.done) return;
       this.done = true;
-      if (!!this._reject) return this._reject(err);
+      if (_isFunction(this._reject)) return this._reject(err);
       console.warn('no reject implemantation!');
     }
   }
   const PRMSCTOR = (typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) ? Promise : _Promise;
 
   let Deferred = function() {
+    this.resolve = null;
+    this.reject = null;
     this.promise = new PRMSCTOR((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
     });
   }
-  Deferred.prototype = {
-    promise: null,
-    resolve: null,
-    reject: null
-  }
+
   const _handlers = {};
   const _cache = {};
   const _state = {
