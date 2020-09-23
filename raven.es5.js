@@ -1,7 +1,7 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE (ES5)
- * v1.0.8
+ * v1.0.9
  * @license
  * Released under MIT license
  * Copyright ...
@@ -69,15 +69,17 @@
         this._reject = rej;
     }
     _Promise.prototype.resolve = function(data) {
-        if (this.done) return;
-        this.done = true;
-        if (_isFunction(this._resolve)) return this._resolve(data);
+        let self = this.promise || this;
+        if (self.done) return;
+        self.done = true;
+        if (_isFunction(self._resolve)) return self._resolve(data);
         console.warn('no resolve implemantation!');
     }
     _Promise.prototype.reject = function(err) {
-        if (this.done) return;
-        this.done = true;
-        if (_isFunction(this._reject)) return this._reject(err);
+        let self = this.promise || this;
+        if (self.done) return;
+        self.done = true;
+        if (_isFunction(self._reject)) return self._reject(err);
         console.warn('no reject implemantation!');
     }
 
