@@ -1,45 +1,10 @@
 'use strict';
 /**
  * RAVEN CLIENT MODULE
- * v1.0.9
+ * v1.1.1
  * @license
  * Released under MIT license
  * Copyright ...
- * 
- * --> send or/and retrieve state message:
- * raven.state([data [, options]])
- *   .then(
- *      (response) => {...},
- *      (err) => {...});
- * 
- *      // data (optional):
- *      // send data to raven container
- *      {
- *        name: 'appname',  // application name
- *        version: '1.0.0', // application version
- *        menu: [....],     // application menu structure changes
- *        error: err        // error to parent
- *      }
- * 
- *      // options (optional):
- *      {
- *        unique: false,    // if true run one only message for type until response
- *        timeout: 3000     // request timeout
- *      }
- * 
- *      // response
- *      {
- *        token: 'xxxx',     // token
- *        data: {...},       // data object
- *        action: 'ation',   // action name (see constants.)
- *        type: string;
- *      }
- * 
- * --> events handler:
- * raven.subscribe(
- *    (message) => any            // message handler
- *    [, (data) => boolean]);     // (optional) message filter
- *  
  */
 ;(function() {
   // self
@@ -114,8 +79,9 @@
   function _checkCss(data) {
     if (!((data||{}).app||{}).css || _state.css) return;
     const style = document.createElement('style');
-    if (!!style.styleSheet) {
-      style.styleSheet.cssText = data.app.css;
+    const styleSheet = style.styleSheet||style.style;
+    if (!!styleSheet) {
+      styleSheet.cssText = data.app.css;
     } else {
       style.appendChild(document.createTextNode(data.app.css));
     }
@@ -159,6 +125,15 @@
     const xh = _findHandler(h => h.callback === fn);
     if (xh) delete _handlers[xh];
   }
+  function _checkUrl() {
+    const loc = window.location;
+    if (_state.url !== loc.href && _isFunction(raven.getPosition)) {
+      _state.url = loc.href;
+      const position = raven.getPosition(loc);
+      if (position) _send({ type: 'position', data: position });
+    }
+  }
+
   const raven = {
     constants: {
       tmeout: 3000,
@@ -184,7 +159,12 @@
     }
   });
 
-  if (raven.active) document.querySelector('html').classList.add(raven.constants.owner);
+  if (raven.active) {
+    // html element has "raven" class inside raven
+    document.querySelector('html').classList.add(raven.constants.owner);
+    // check url changes
+    setInterval(() => _checkUrl(), 250);
+  }
 
   if (_module) {
     // Export for Node.js.

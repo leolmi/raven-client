@@ -36,12 +36,39 @@ export declare interface RavenMessage {
   error?: any;
   context?: any;
   channel?: string;
+  debug?: boolean;
+}
+
+export type RavenAppLoadedMode = 'action' | 'browser' | 'message';
+
+export declare interface RavenRequest {
+  endpoint: string;
+  method: string;
+  useProxy: boolean;
+  bodyTemplate: string;
+  headers: string;
+  useCallerHeaders: boolean;
+  responseType: string;
+}
+
+export declare interface RavenAppOptions {
+  loadedMode?: RavenAppLoadedMode;
+  aboutRequest?: RavenRequest|string;
+  aboutInfo?: any;
 }
 
 export declare interface RavenAppInfo {
   name?: string;
   version?: string;
+  options?: RavenAppOptions;
   [pn: string]: any;
+}
+
+export declare interface RavenAppPosition {
+  action?: string;
+  path?: string|string[];
+  url?: string;
+  data?: any;
 }
 
 
@@ -54,6 +81,10 @@ export declare namespace  raven {
    * raven constants
    */
   const constants: any;
+  /**
+   * getPosition
+   */
+  let getPosition: (loc: Location) => RavenAppPosition;
   /**
    * send/retrieve state informations
    */
@@ -70,5 +101,6 @@ export declare namespace  raven {
    * send message
    */
   function send(msg?: RavenMessage): void;
+
 }
 
