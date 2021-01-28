@@ -90,6 +90,10 @@ export declare namespace  raven {
    */
   function state(data?: RavenAppInfo, o?:any): Promise<RavenMessage>;
   /**
+   * send message
+   */
+  function send(msg?: RavenMessage): void;
+  /**
    * subscribe to container events
    */
   function subscribe(fn:(message: RavenMessage) => any, filter?:(message: RavenMessage)=>boolean);
@@ -97,10 +101,5 @@ export declare namespace  raven {
    * unsubscribe from container events
    */
   function unsubscribe(fn:(message: RavenMessage) => any): void;
-  /**
-   * send message
-   */
-  function send(msg?: RavenMessage): void;
-
 }
 
