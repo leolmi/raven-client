@@ -76,7 +76,7 @@
 
     function _send(msg) {
         if (!raven.active) return console.warn('Undefined parent raven module!');
-        root.parent.postMessage(msg, '*');
+        root.parent.postMessage(msg, raven.parentOrigin);
     }
 
     function _checkOutOfTime() {
@@ -166,6 +166,7 @@
                 menu: 'menu-action'
             }
         },
+        parentOrigin: '*',
         active: (root.parent !== root),
         state: function (data, o) {
             return _deferred('state', data, o);
