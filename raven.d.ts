@@ -74,7 +74,7 @@ export declare interface RavenAppPosition {
 
 export declare namespace  raven {
   /**
-   * contaner interop state
+   * container interop state
    */
   const active: boolean;
   /**
@@ -82,11 +82,15 @@ export declare namespace  raven {
    */
   const constants: any;
   /**
+   * parent origin
+   */
+  let parentOrigin: string;
+  /**
    * getPosition
    */
   let getPosition: (loc: Location) => RavenAppPosition;
   /**
-   * send/retrieve state informations
+   * send/retrieve state information
    */
   function state(data?: RavenAppInfo, o?:any): Promise<RavenMessage>;
   /**
